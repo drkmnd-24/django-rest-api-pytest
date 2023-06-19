@@ -29,7 +29,7 @@ class BrandView(viewsets.ViewSet):
 
 
 class ProductView(viewsets.ViewSet):
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().isactive()
     lookup_field = 'pk'
 
     def retrieve(self, request, pk=None):
