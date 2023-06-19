@@ -1,23 +1,33 @@
 from rest_framework import serializers
 
-from product.models import Category, Brand, Product
+from product.models import Category, Brand, Product, ProductLine
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='name')
+
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ['category_name']
 
 
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
-        fields = '__all__'
+        exclude = ['id']
+
+
+class ProductLineSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductLine
+        exclude = ['id', 'is_active', 'product']
 
 
 class ProductSerializer(serializers.ModelSerializer):
     brand = BrandSerializer()
     category = CategorySerializer()
+    product_line = ProductLineSerializer(many=True)
 
     class Meta:
         model = Product
