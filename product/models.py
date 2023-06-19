@@ -6,8 +6,6 @@ from product.api.fields import OrderField
 
 
 class ActiveQueryset(models.QuerySet):
-    # def get_queryset(self):
-    #     return super().get_queryset().filter(is_active=True)
     def isactive(self):
         return self.filter(is_active=True)
 
@@ -61,14 +59,16 @@ class ProductLine(models.Model):
 
     objects = ActiveQueryset.as_manager()
 
-    def clean_fields(self, exclude=None):
-        super().clean_fields(exclude=exclude)
-
+    def clean(self):
         qs = ProductLine.objects.filter(product=self.product)
 
         for obj in qs:
             if self.id != obj.id and self.order == obj.order:
                 raise ValidationError('Duplicate value')
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(ProductLine, self).save(*args, **kwargs)
+
     def __str__(self):
-        return str(self.order)
+        return str(self.sku)
