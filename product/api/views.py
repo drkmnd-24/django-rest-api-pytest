@@ -33,7 +33,9 @@ class ProductView(viewsets.ViewSet):
     lookup_field = 'slug'
 
     def retrieve(self, request, slug=None):
-        serializer = ProductSerializer(self.queryset.filter(slug=slug), many=True)
+        serializer = ProductSerializer(
+            Product.objects.filter(slug=slug).select_related('category', 'brand'), many=True
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(responses=ProductSerializer)

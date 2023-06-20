@@ -82,7 +82,7 @@ class ProductImage(models.Model):
     order = OrderField(unique_for_field='productline', blank=True)
 
     def clean(self):
-        qs = ProductImage.objects.filter(product=self.productline)
+        qs = ProductImage.objects.filter(productline=self.productline)
         for obj in qs:
             if self.id != obj.id and self.order == obj.order:
                 raise ValidationError('Duplicate value')
@@ -92,4 +92,4 @@ class ProductImage(models.Model):
         return super(ProductImage, self).save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.url)
+        return str(self.order)
