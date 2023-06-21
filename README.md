@@ -1,1 +1,1 @@
-# e-commerce-backend
+# e-commerce-backend using Django REST API
