@@ -94,11 +94,27 @@ class AttributeValue(models.Model):
 
 
 class ProductLineAttributeValue(models.Model):
-    attribute_value = models.ForeignKey(AttributeValue, on_delete=models.CASCADE, related_name='product_attribute_value_av')
+    attribute_value = models.ForeignKey(
+        AttributeValue, on_delete=models.CASCADE, related_name='product_attribute_value_av')
     product_line = models.ForeignKey(ProductLine, on_delete=models.CASCADE, related_name='product_attribute_value_pl')
 
     class Meta:
         unique_together = ('attribute_value', 'product_line')
+
+    def clean(self):
+        qs = ProductLineAttributeValue.objects.filter(attribute_value=self.attribute_value).filter(
+            product_line=self.product_line).exists()
+
+        if not qs:
+            iqs = Attribute.objects.filter(
+                attribute_value__product_line_attribute_value=self.product_line).values_list('pk', flat=True)
+
+            if self.attribute_value.attribute.id in list(iqs):
+                raise ValidationError('Duplicate attribute exists')
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(ProductLineAttributeValue, self).save(*args, **kwargs)
 
 
 class ProductImage(models.Model):
