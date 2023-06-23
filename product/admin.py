@@ -4,8 +4,8 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Category, Brand, Product, ProductLine,
-    ProductImage, AttributeValue, Attribute
-)
+    ProductImage, AttributeValue, Attribute,
+    ProductType, ProductTypeAttribute, ProductLineAttributeValue)
 
 
 class EditLinkInline(object):
@@ -43,9 +43,18 @@ class ProductLineAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline, AttributeValueInline]
 
 
+class AttributeInline(admin.TabularInline):
+    model = Attribute.product_type_attr.through
+
+
+class ProductTypeAdmin(admin.ModelAdmin):
+    inlines = [AttributeInline]
+
+
 admin.site.register(Category)
 admin.site.register(Brand)
 admin.site.register(Attribute)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductLine, ProductLineAdmin)
 admin.site.register(AttributeValue)
+admin.site.register(ProductType, ProductTypeAdmin)
