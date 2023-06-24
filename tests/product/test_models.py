@@ -23,15 +23,37 @@ class TestProductModel:
 
 
 class TestProductLineModel:
-    def test_str_method(self, product_line_factory):
-        obj = product_line_factory(sku='12345')
-        assert obj.__str__() == '12345'
+    def test_str_method(self, product_line_factory, attribute_value_factory):
+        attr = attribute_value_factory(attr_value="test")
+        obj = product_line_factory.create(sku="12345")
+        obj.attribute_value.set([attr])
+        assert obj.__str__() == "12345"
 
     def test_duplicate_order_values(self, product_line_factory, product_factory):
         obj = product_factory()
         product_line_factory(order=1, product=obj)
         with pytest.raises(ValidationError):
             product_line_factory(order=1, product=obj).clean()
+
+
+class TestProductTypeModel:
+    def test_str_method(self, product_type_factory, attribute_factory):
+        test = attribute_factory(name='test')
+        obj = product_type_factory.create(name='test_type', attribute=(test,))
+        assert obj.__str__() == 'test_type'
+
+
+class TestAttributeModel:
+    def test_str_method(self, attribute_factory):
+        obj = attribute_factory(name='test_attribute')
+        assert obj.__str__() == 'test_attribute'
+
+
+class TestAttributeValueModel:
+    def test_str_method(self, attribute_value_factory, attribute_factory):
+        obj_a = attribute_factory(name='test_attribute')
+        obj_b = attribute_value_factory(attr_value='test_value', attribute=obj_a)
+        assert obj_b.__str__() == 'test_attribute-test_value'
 
 
 class TestProductImageModel:
