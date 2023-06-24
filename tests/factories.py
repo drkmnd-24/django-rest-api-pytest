@@ -2,7 +2,8 @@ import factory
 
 from product.models import (Category, Brand, Product,
                             ProductLine, ProductImage,
-                            ProductType)
+                            ProductType, Attribute,
+                            AttributeValue)
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -19,11 +20,33 @@ class BrandFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: 'Brand_%d' % n)
 
 
+class AttributeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Attribute
+
+    name = 'attribute_name_test'
+    description = 'attr_description_test'
+
+
 class ProductTypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ProductType
 
     name = 'test_type'
+
+    @factory.post_generation
+    def attribute(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute.add(*extracted)
+
+
+class AttributeValueFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AttributeValue
+
+    attr_value = 'attr_test'
+    attribute = factory.SubFactory(AttributeFactory)
 
 
 class ProductFactory(factory.django.DjangoModelFactory):
