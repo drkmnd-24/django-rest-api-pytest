@@ -38,6 +38,7 @@ class Brand(models.Model):
 class Product(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     category = TreeForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True)
+    product_type = models.ForeignKey('ProductType', on_delete=models.PROTECT)
     name = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(blank=True)
     slug = models.SlugField(max_length=100)
@@ -59,7 +60,6 @@ class ProductLine(models.Model):
     order = OrderField(blank=True, unique_for_field='product')
     attribute_value = models.ManyToManyField(
         'AttributeValue', through='ProductLineAttributeValue', related_name='product_line_attribute_value')
-    product_type = models.ForeignKey('ProductType', on_delete=models.PROTECT)
     objects = ActiveQueryset.as_manager()
 
     def clean(self):
