@@ -8,11 +8,11 @@ from rest_framework.test import APIClient
 #                         ProductLineFactory, ProductImageFactory,
 #                         ProductTypeFactory)
 
-from .factories import CategoryFactory
+from .factories import CategoryFactory, ProductFactory
 
 
 register(CategoryFactory)
-# register(ProductFactory)
+register(ProductFactory)
 # register(ProductLineFactory)
 # register(ProductImageFactory)
 # register(ProductTypeFactory)

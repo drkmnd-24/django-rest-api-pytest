@@ -5,7 +5,7 @@ import factory
 #                             ProductType, Attribute,
 #                             AttributeValue)
 
-from product.models import Category
+from product.models import Category, Product
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -47,16 +47,17 @@ class CategoryFactory(factory.django.DjangoModelFactory):
 #     attribute = factory.SubFactory(AttributeFactory)
 #
 #
-# class ProductFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = Product
-#
-#     name = 'test_product'
-#     description = 'test_description'
-#     is_digital = True
-#     category = factory.SubFactory(CategoryFactory)
-#     is_active = True
-#     product_type = factory.SubFactory(ProductTypeFactory)
+class ProductFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Product
+
+    name = factory.Sequence(lambda n: 'test_product_name_%d' % n)
+    pid = factory.Sequence(lambda n: '0000_%d' % n)
+    description = 'test_description'
+    is_digital = True
+    category = factory.SubFactory(CategoryFactory)
+    is_active = True
+    # product_type = factory.SubFactory(ProductTypeFactory)
 #
 #
 # class ProductLineFactory(factory.django.DjangoModelFactory):
