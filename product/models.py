@@ -25,25 +25,16 @@ class Category(MPTTModel):
         return self.name
 
 
-class Brand(models.Model):
-    name = models.CharField(max_length=100, null=True, blank=True, unique=True)
-    is_active = models.BooleanField(default=False)
-
-    objects = IsActiveQueryset.as_manager()
-
-    def __str__(self):
-        return self.name
-
-
 class Product(models.Model):
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
-    category = TreeForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True)
-    product_type = models.ForeignKey('ProductType', on_delete=models.PROTECT)
-    name = models.CharField(max_length=100, null=True, blank=True)
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=255)
+    pid = models.CharField(max_length=10, unique=True)
     description = models.TextField(blank=True)
-    slug = models.SlugField(max_length=100)
     is_digital = models.BooleanField(default=False)
+    category = TreeForeignKey('Category', on_delete=models.PROTECT)
+    # product_type = models.ForeignKey('ProductType', on_delete=models.PROTECT, related_name='product')
     is_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     objects = IsActiveQueryset.as_manager()
 

@@ -1,5 +1,5 @@
-from api.serializers import CategorySerializer, BrandSerializer, ProductSerializer
-from product.models import Category, Brand, Product
+from api.serializers import CategorySerializer, ProductSerializer
+from product.models import Category, Product
 
 from rest_framework import viewsets
 from rest_framework import status
@@ -19,22 +19,13 @@ class CategoryView(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class BrandView(viewsets.ViewSet):
-    queryset = Brand.objects.all()
-
-    @extend_schema(responses=BrandSerializer)
-    def list(self, request):
-        serializer = BrandSerializer(self.queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
 class ProductView(viewsets.ViewSet):
-    queryset = Product.objects.all().isactive()
+    queryset = Product.objects.all().is_active()
     lookup_field = 'slug'
 
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
-            Product.objects.filter(slug=slug).select_related('category', 'brand'), many=True
+            Product.objects.filter(slug=slug).select_related('category'), many=True
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
