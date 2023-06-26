@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Category, Brand, Product, ProductLine,
+    Category, Product, ProductLine,
     ProductImage, AttributeValue, Attribute,
     ProductType, ProductTypeAttribute, ProductLineAttributeValue)
 
@@ -52,7 +52,6 @@ class ProductTypeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Category)
-admin.site.register(Brand)
 admin.site.register(Attribute)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductLine, ProductLineAdmin)

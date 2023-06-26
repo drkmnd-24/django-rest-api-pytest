@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from product.models import Category, Brand, Product, ProductLine, ProductImage, Attribute, AttributeValue
+from product.models import Category, Product, ProductLine, ProductImage, Attribute, AttributeValue
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -9,12 +9,6 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['category_name']
-
-
-class BrandSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Brand
-        exclude = ['id']
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -57,7 +51,6 @@ class ProductLineSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    brand_name = serializers.CharField(source='brand.name')
     category_name = serializers.CharField(source='category.name')
     product_line = ProductLineSerializer(many=True)
     attribute = serializers.SerializerMethodField()
@@ -66,8 +59,8 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = [
             'name', 'slug', 'description',
-            'brand_name', 'category_name',
-            'product_line', 'attribute']
+            'category_name', 'product_line',
+            'attribute']
 
     def get_attribute(self, obj):
         attribute = Attribute.objects.filter(product_type_attr__product__id=obj.id)
