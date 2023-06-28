@@ -1,12 +1,7 @@
 import factory
 
-# from product.models import (Category, Brand, Product,
-#                             ProductLine, ProductImage,
-#                             ProductType, Attribute,
-#                             AttributeValue)
-
 from product.models import (Category, Product, ProductLine,
-                            ProductImage, ProductType, Attribute)
+                            ProductImage, ProductType, Attribute, AttributeValue)
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -38,14 +33,14 @@ class ProductTypeFactory(factory.django.DjangoModelFactory):
         self.attribute.add(*extracted)
 
 
-# class AttributeValueFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = AttributeValue
-#
-#     attr_value = 'attr_test'
-#     attribute = factory.SubFactory(AttributeFactory)
-#
-#
+class AttributeValueFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AttributeValue
+
+    attr_value = 'attr_test'
+    attribute = factory.SubFactory(AttributeFactory)
+
+
 class ProductFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Product
