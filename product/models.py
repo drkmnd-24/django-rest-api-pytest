@@ -32,7 +32,7 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     is_digital = models.BooleanField(default=False)
     category = TreeForeignKey('Category', on_delete=models.PROTECT)
-    # product_type = models.ForeignKey('ProductType', on_delete=models.PROTECT, related_name='product')
+    product_type = models.ForeignKey('ProductType', on_delete=models.PROTECT, related_name='product_type')
     is_active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
@@ -52,6 +52,7 @@ class ProductLine(models.Model):
     weight = models.FloatField()
     # attribute_value = models.ManyToManyField(
     #     'AttributeValue', through='ProductLineAttributeValue', related_name='product_line_attribute_value')
+    product_type = models.ForeignKey('ProductType', on_delete=models.PROTECT, related_name='product_line_type')
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     objects = IsActiveQueryset.as_manager()
 
@@ -132,6 +133,7 @@ class ProductImage(models.Model):
 
 class ProductType(models.Model):
     name = models.CharField(max_length=100)
+    parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True)
     attribute = models.ManyToManyField(Attribute, through='ProductTypeAttribute', related_name='product_type_attr')
 
     def __str__(self):
