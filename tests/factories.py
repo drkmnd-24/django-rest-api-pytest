@@ -5,7 +5,7 @@ import factory
 #                             ProductType, Attribute,
 #                             AttributeValue)
 
-from product.models import Category, Product, ProductLine
+from product.models import Category, Product, ProductLine, ProductImage
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -72,10 +72,10 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     weight = 100
 
 
-# class ProductImageFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = ProductImage
-#
-#     alternative_text = 'test alternative text'
-#     url = 'test.jpg'
-#     productline = factory.SubFactory(ProductLineFactory)
+class ProductImageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductImage
+
+    alternative_text = 'test alternative text'
+    url = 'test.jpg'
+    productline = factory.SubFactory(ProductLineFactory)
