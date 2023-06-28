@@ -1,7 +1,8 @@
 import factory
 
 from product.models import (Category, Product, ProductLine,
-                            ProductImage, ProductType, Attribute, AttributeValue)
+                            ProductImage, ProductType, Attribute,
+                            AttributeValue, ProductLineAttributeValue)
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -53,6 +54,12 @@ class ProductFactory(factory.django.DjangoModelFactory):
     is_active = True
     product_type = factory.SubFactory(ProductTypeFactory)
 
+    @factory.post_generation
+    def attribute_value(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute_value.add(*extracted)
+
 
 class ProductLineFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -66,6 +73,12 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     weight = 100
     product_type = factory.SubFactory(ProductTypeFactory)
 
+    @factory.post_generation
+    def attribute_value(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute_value.add(*extracted)
+
 
 class ProductImageFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -74,3 +87,11 @@ class ProductImageFactory(factory.django.DjangoModelFactory):
     alternative_text = 'test alternative text'
     url = 'test.jpg'
     productline = factory.SubFactory(ProductLineFactory)
+
+
+class ProductLineAttributeValueFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductLineAttributeValue
+
+    attribute_value = factory.SubFactory(AttributeValueFactory)
+    product_line = factory.SubFactory(ProductLineFactory)
