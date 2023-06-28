@@ -5,7 +5,8 @@ import factory
 #                             ProductType, Attribute,
 #                             AttributeValue)
 
-from product.models import Category, Product, ProductLine, ProductImage, ProductType
+from product.models import (Category, Product, ProductLine,
+                            ProductImage, ProductType, Attribute)
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -16,14 +17,12 @@ class CategoryFactory(factory.django.DjangoModelFactory):
     slug = factory.Sequence(lambda n: 'test_slug_%d' % n)
 
 
-#
-#
-# class AttributeFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = Attribute
-#
-#     name = 'attribute_name_test'
-#     description = 'attr_description_test'
+class AttributeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Attribute
+
+    name = 'attribute_name_test'
+    description = 'attr_description_test'
 
 
 class ProductTypeFactory(factory.django.DjangoModelFactory):
@@ -32,11 +31,11 @@ class ProductTypeFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: 'test_type_name_%d' % n)
 
-    # @factory.post_generation
-    # def attribute(self, create, extracted, **kwargs):
-    #     if not create or not extracted:
-    #         return
-    #     self.attribute.add(*extracted)
+    @factory.post_generation
+    def attribute(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute.add(*extracted)
 
 
 # class AttributeValueFactory(factory.django.DjangoModelFactory):
