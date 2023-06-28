@@ -114,6 +114,18 @@ class TestProductModel:
 
 
 class TestProductLineModel:
+    def test_duplicate_attribute_inserts(
+            self, product_line_factory,
+            attribute_factory, attribute_value_factory,
+            product_line_attribute_value_factory):
+        obj_1 = attribute_factory(name='shoe-color')
+        obj_2 = attribute_value_factory(attr_value='red', attribute=obj_1)
+        obj_3 = attribute_value_factory(attr_value='blue', attribute=obj_1)
+        obj_4 = product_line_factory()
+        product_line_attribute_value_factory(attribute_value=obj_2, product_line=obj_4)
+        with pytest.raises(ValidationError):
+            product_line_attribute_value_factory(attribute_value=obj_3, product_line=obj_4)
+
     def test_str_method(self, product_line_factory):
         obj = product_line_factory(sku="12345")
         assert obj.__str__() == "12345"
@@ -186,11 +198,17 @@ class TestAttributeModel:
             obj.full_clean()
 
 
-# class TestAttributeValueModel:
-#     def test_str_method(self, attribute_value_factory, attribute_factory):
-#         obj_a = attribute_factory(name='test_attribute')
-#         obj_b = attribute_value_factory(attr_value='test_value', attribute=obj_a)
-#         assert obj_b.__str__() == 'test_attribute-test_value'
+class TestAttributeValueModel:
+    def test_str_method(self, attribute_value_factory, attribute_factory):
+        obj_a = attribute_factory(name='test_attribute')
+        obj_b = attribute_value_factory(attr_value='test_value', attribute=obj_a)
+        assert obj_b.__str__() == 'test_attribute-test_value'
+
+    def test_value_field_max_length(self, attribute_value_factory):
+        attr_value = 'x' * 101
+        obj = attribute_value_factory(attr_value=attr_value)
+        with pytest.raises(ValidationError):
+            obj.full_clean()
 
 
 class TestProductImageModel:

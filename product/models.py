@@ -96,7 +96,7 @@ class ProductAttributeValue(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_attribute_value_pl')
 
     class Meta:
-        unique_together = ('attribute_value', 'product_line')
+        unique_together = ('attribute_value', 'product')
 
 
 class ProductLineAttributeValue(models.Model):
@@ -105,7 +105,7 @@ class ProductLineAttributeValue(models.Model):
     product_line = models.ForeignKey(ProductLine, on_delete=models.CASCADE, related_name='product_attribute_value_pl')
 
     class Meta:
-        unique_together = ('attribute_value', 'product')
+        unique_together = ('attribute_value', 'product_line')
 
     def clean(self):
         qs = ProductLineAttributeValue.objects.filter(attribute_value=self.attribute_value).filter(
