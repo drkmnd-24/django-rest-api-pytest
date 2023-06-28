@@ -174,9 +174,21 @@ class TestProductLineModel:
 #         obj_a = attribute_factory(name='test_attribute')
 #         obj_b = attribute_value_factory(attr_value='test_value', attribute=obj_a)
 #         assert obj_b.__str__() == 'test_attribute-test_value'
-#
-#
-# class TestProductImageModel:
-#     def test_str_method(self, product_image_factory):
-#         obj = product_image_factory(order=1)
-#         assert obj.__str__() == '1'
+
+
+class TestProductImageModel:
+    def test_str_method(self, product_image_factory, product_line_factory):
+        obj_1 = product_line_factory(sku='12345')
+        obj_2 = product_image_factory(order=1, productline=obj_1)
+        assert obj_2.__str__() == '12345_img'
+
+    def test_alternative_text_field_length(self, product_image_factory):
+        alternative_text = 'x' * 101
+        with pytest.raises(ValidationError):
+            product_image_factory(alternative_text=alternative_text)
+
+    def test_duplicate_order_values(self, product_image_factory, product_line_factory):
+        obj = product_line_factory()
+        product_image_factory(order=1, productline=obj)
+        with pytest.raises(ValidationError):
+            product_image_factory(order=1, productline=obj).clean()
