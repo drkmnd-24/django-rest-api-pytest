@@ -11,7 +11,7 @@ from drf_spectacular.utils import extend_schema
 
 
 class CategoryView(viewsets.ViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().is_active()
 
     @extend_schema(responses=CategorySerializer)
     def list(self, request):
