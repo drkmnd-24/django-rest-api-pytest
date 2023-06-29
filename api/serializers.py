@@ -4,11 +4,11 @@ from product.models import Category, Product, ProductLine, ProductImage, Attribu
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    category_name = serializers.CharField(source='name')
+    category = serializers.CharField(source='name')
 
     class Meta:
         model = Category
-        fields = ['category_name']
+        fields = ['category', 'slug']
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -68,9 +68,10 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        av_data = data.pop('attribute')
-        attrib_values = {}
+        av_data = data.pop("attribute")
+        attr_values = {}
         for key in av_data:
-            attrib_values.update({key['id']: key['name']})
-        data.update({'type specification': attrib_values})
+            attr_values.update({key["id"]: key["name"]})
+        data.update({"type specification": attr_values})
+
         return data
