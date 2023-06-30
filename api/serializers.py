@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from product.models import Category, Product, ProductLine, ProductImage, Attribute, AttributeValue
+from product.models import (Category, Product, ProductLine,
+                            ProductImage, Attribute, AttributeValue)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -14,7 +15,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        exclude = ['id']
+        exclude = ['id', 'product_line']
 
 
 class AttributeSerializer(serializers.ModelSerializer):
@@ -47,6 +48,32 @@ class ProductLineSerializer(serializers.ModelSerializer):
         for key in av_data:
             attrib_values.update({key['attribute']['id']: key['attr_value']})
         data.update({'specification': attrib_values})
+        return data
+
+
+class ProductLineCategorySerializer(serializers.ModelSerializer):
+    product_image = ProductImageSerializer(many=True)
+
+    class Meta:
+        model = ProductLine
+        fields = ['price', 'product_image']
+
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+    product_line = ProductLineCategorySerializer(many=True)
+
+    class Meta:
+        model = Product
+        fields = ['name', 'slug', 'pid', 'created_at', 'product_line']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        x = data.pop('product_line')
+        price = x[0]['price']
+        image = x[0]['product_image']
+        data.update({'price': price})
+        data.update({'image': image})
+
         return data
 
 
