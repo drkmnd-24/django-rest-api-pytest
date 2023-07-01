@@ -11,6 +11,7 @@ from .models import (
 class EditLinkInline(object):
     def edit(self, instance):
         url = reverse(
+            f"admin:{instance._meta.app_label}_{instance._meta.model_name}_change",
             args=[instance.pk],
         )
 
