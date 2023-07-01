@@ -15,7 +15,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        exclude = ['id', 'product_line']
+        exclude = ['id', 'productline']
 
 
 class AttributeSerializer(serializers.ModelSerializer):
