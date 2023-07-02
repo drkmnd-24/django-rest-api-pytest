@@ -130,6 +130,12 @@ class TestProductLineModel:
         obj = product_line_factory(sku="12345")
         assert obj.__str__() == "12345"
 
+    def test_fk_product_type_on_delete_protect(self, product_type_factory, product_line_factory):
+        obj_1 = product_type_factory()
+        product_line_factory(product_type=obj_1)
+        with pytest.raises(IntegrityError):
+            obj_1.delete()
+
     def test_duplicate_order_values(self, product_line_factory, product_factory):
         obj = product_factory()
         product_line_factory(order=1, product=obj)
@@ -155,7 +161,7 @@ class TestProductLineModel:
         obj = product_line_factory(is_active=False)
         assert obj.is_active is False
 
-    def test_fk_product_type_on_delete_protect(self, product_factory, product_line_factory):
+    def test_fk_product_on_delete_protect(self, product_factory, product_line_factory):
         obj_1 = product_factory()
         product_line_factory(product=obj_1)
         with pytest.raises(IntegrityError):
