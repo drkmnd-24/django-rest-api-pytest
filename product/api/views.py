@@ -27,14 +27,14 @@ class ProductView(viewsets.ViewSet):
 
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
-            Product.objects.filter(slug=slug).select_related('category'), many=True
+            self.queryset.filter(slug=slug)
+            .prefetch_related(Prefetch('attribute_value__attribute'))
+            .prefetch_related(Prefetch('product_line__product_image'))
+            .prefetch_related(Prefetch('product_line__attribute_value__attribute')),
+            many=True
         )
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    @extend_schema(responses=ProductSerializer)
-    def list(self, request):
-        serializer = ProductSerializer(self.queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = Response(serializer.data, status=status.HTTP_200_OK)
+        return data
 
     @action(methods=['get'], detail=False, url_path=r'category/(?P<slug>[\w-]+)')
     def list_product_by_category_slug(self, request, slug=None):
