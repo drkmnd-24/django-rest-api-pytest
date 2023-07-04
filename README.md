@@ -1,1 +1,1 @@
-# e-commerce-backend using Django REST API
+# Django REST API with PyTest
